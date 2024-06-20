@@ -13,7 +13,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def build_indexer_input_path(indexer_input_dir: str, s3: bool) -> Union[S3Path, Path]:
-    _LOGGER.info(f"Tasks will be retrieved from {'s3' if s3 else 'local'}: {indexer_input_dir}")
+    _LOGGER.info(
+        f"Tasks will be retrieved from {'s3' if s3 else 'local'}: {indexer_input_dir}"
+    )
     if s3:
         indexer_input_path = cast(S3Path, S3Path(indexer_input_dir))
     else:
@@ -46,7 +48,7 @@ def get_index_paths(
 
     paths = []
     doc_ids = []
-    for i, path in enumerate(list(indexer_input_path.glob("*.json")), 1):        
+    for i, path in enumerate(list(indexer_input_path.glob("*.json")), 1):
         doc_id = path.stem
         if files_to_index and (doc_id not in files_to_index):
             continue
@@ -98,7 +100,7 @@ def filter_blocks(
 
 def filter_on_block_type(
     input: ParserOutput, remove_block_types: list[str]
-) -> Sequence[ParserOutput]:
+) -> ParserOutput:
     """
     Filter a sequence of IndexerInputs to remove unwanted TextBlocks.
 
@@ -115,11 +117,11 @@ def filter_on_block_type(
             remove_block_types.remove(_filter)
 
     return replace_text_blocks(
-            block=input,
-            new_text_blocks=filter_blocks(
-                indexer_input=input, remove_block_types=remove_block_types
-            ),
-        )
+        block=input,
+        new_text_blocks=filter_blocks(
+            indexer_input=input, remove_block_types=remove_block_types
+        ),
+    )
 
 
 def read_npy_file(file_path: Path) -> Any:
