@@ -12,6 +12,11 @@ from cpr_data_access.parser_models import BlockType, ParserOutput, TextBlock
 _LOGGER = logging.getLogger(__name__)
 
 
+def get_text_from_text_block(text_block: TextBlock) -> str:
+    """Get the text from a TextBlock."""
+    return "\n".join(text_block.text)
+
+
 def build_indexer_input_path(indexer_input_dir: str, s3: bool) -> Union[S3Path, Path]:
     _LOGGER.info(
         f"Tasks will be retrieved from {'s3' if s3 else 'local'}: {indexer_input_dir}"
