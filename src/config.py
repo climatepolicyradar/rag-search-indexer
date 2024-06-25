@@ -2,11 +2,16 @@
 
 import os
 
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
 
 class ConfigError(Exception):
     """Configuration Error."""
 
     pass
+
 
 # General config
 BLOCKS_TO_FILTER = os.getenv("BLOCKS_TO_FILTER", "Table,Figure").split(",")
