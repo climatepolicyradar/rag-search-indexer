@@ -278,9 +278,7 @@ def get_document_generator(
         # NOTE we don't use the document description embedding for RAG, so here we'll just use the model that we already use in product
         family_document = build_vespa_family_document(
             task,
-            embeddings_by_model_slug[
-                "msmarco-distilbert-dot-v5",
-            ],
+            embeddings_by_model_slug["msmarco-distilbert-dot-v5"],
             search_weights_ref,
         )
 
