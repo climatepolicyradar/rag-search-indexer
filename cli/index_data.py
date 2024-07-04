@@ -75,12 +75,16 @@ def run_as_cli(
         sys.exit(1)
     elif index_type.lower() == "vespa":
         _LOGGER.warning("Vespa indexing still experimental")
-        
+
         indexer_input_path = build_indexer_input_path(indexer_input_dir, s3)
         paths = get_index_paths(indexer_input_path, files_to_index, limit)
 
         start = time.time()
-        populate_vespa(paths=paths, embedding_dir_as_path=indexer_input_path)
+        populate_vespa(
+            paths=paths,
+            embedding_dir_as_path=indexer_input_path,
+            sleep_between_batches=10,
+        )
         duration = time.time() - start
         _LOGGER.info(f"Vespa indexing completed after: {duration}s")
         sys.exit(0)

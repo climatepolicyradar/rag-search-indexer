@@ -12,6 +12,7 @@ from typing import (
     Union,
     cast,
 )
+import time
 
 from cloudpathlib import S3Path
 from cpr_data_access.parser_models import ParserOutput, PDFTextBlock, VerticalFlipError
@@ -453,6 +454,7 @@ def _batch_ingest(vespa: Vespa, to_process: Mapping[SchemaName, list]):
 def populate_vespa(
     paths: Sequence[Union[Path, S3Path]],
     embedding_dir_as_path: Union[Path, S3Path],
+    sleep_between_batches: float = 10,
 ) -> None:
     """
     Index documents into Vespa.
@@ -461,6 +463,7 @@ def populate_vespa(
         files from the PDF parser.
     :param embedding_dir: directory or S3 folder containing embeddings from the
         text2embeddings CLI.
+    :param sleep_between_batches: time to sleep (seconds) between batches of documents.
     """
     vespa = _get_vespa_instance()
 
@@ -488,6 +491,8 @@ def populate_vespa(
         if len(to_process[DOCUMENT_PASSAGE_SCHEMA]) >= config.VESPA_DOCUMENT_BATCH_SIZE:
             _batch_ingest(vespa, to_process)
             to_process.clear()
+
+            time.sleep(sleep_between_batches)
 
     _LOGGER.info("Final ingest batch")
     _batch_ingest(vespa, to_process)
